@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ViewBox - SVG | Lwin Moe Paing</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="//cdn.tailwindcss.com"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+  </head>
+  <body x-data="container" class="hidden">
+    <!-- Container: Start -->
+    <div x-cloak>
+      <div :class="containerClass">
+        <svg class="svg" :view-box.camel="viewBox" :style="boxStyle"></svg>
+        <div
+          class="bg-black text-white text-xs font-mono inline-block rounded px-2 py-[2px] absolute top-0 right-0"
+          x-text="width + 'x' + height + 'px'"
+        ></div>
+      </div>
+    </div>
+    <!-- Container: End -->
+
+    <!-- Side Bar: Finished -->
+    <div :class="sideContainer" x-cloak>
+      <h1 class="px-2 text-2xl mb-5">SVG Viewbox</h1>
+      <button :class="sideBtnClass" x-on:click="toggle">
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+            x-show="!open"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+            x-show="open"
+          />
+        </svg>
+      </button>
+      <div>
+        <p class="text-sm mb-1 px-2">Viewbox-Width</p>
+        <input
+          type="number"
+          class="w-full h-[40px] px-2 outline-none border rounded-md mb-3"
+          placeholder="Enter Viewbox Width"
+          x-model="width"
+          min="0"
+          @keyup.shift.up="setTimeout(() => {width = +width + 9}, 5)"
+          @keyup.shift.down="setTimeout(() => {width = +width - 9 <= 0 ? 0 : +width - 9}, 5)"
+        />
+        <p class="text-sm mb-1 px-2">Viewbox-Height</p>
+        <input
+          type="number"
+          class="w-full h-[40px] px-2 outline-none border rounded-md mb-3"
+          placeholder="Enter Viewbox Height"
+          x-model="height"
+          min="0"
+          @keyup.shift.up="setTimeout(() => {height = +height + 9}, 5)"
+          @keyup.shift.down="setTimeout(() => {height = +height - 9 <= 0 ? 0 : +height - 9}, 5)"
+        />
+
+        <div>
+          <input type="checkbox" x-model="responsive" id="responsive" />
+          <label for="responsive">Responsive</label>
+        </div>
+      </div>
+    </div>
+    <!-- Side Bar: End -->
+
+    <!-- Footer-Console: Start -->
+    <div :class="footerContainer">
+      <p class="text-sm text-green-500 font-mono" x-text="footerText"></p>
+      <button :class="footerBtnClass" x-on:click="footerToggle">
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+            x-show="!footerOpen"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+            x-show="footerOpen"
+          />
+        </svg>
+      </button>
+    </div>
+    <!-- Footer-Console: End -->
+
+    <!-- Alpine Script: Start -->
+    <script>
+      document.addEventListener("alpine:init", () => {
+        document.body.classList.remove("hidden");
+        let defaultClass =
+          "w-[300px] border-r border-zinc-100 fixed h-dvh top-0 p-[20px] transition-all transition ease-in-out delay-150";
+        let footerDefaultClass =
+          "p-[20px] fixed bottom-0 h-[180px] max-w-[700px] w-full mx-auto bg-[#3e3e3e] w-full left-[50%] -translate-x-1/2 transition-all transition ease-in-out delay-150";
+
+        Alpine.data("container", () => ({
+          footerContainer: `${footerDefaultClass} bottom-0`,
+          sideContainer: `${defaultClass} left-0`,
+          sideBtnClass:
+            "absolute top-[12px] -right-[48px] w-[40px] h-[40px] bg-zinc-100 " +
+            "flex justify-center items-center " +
+            "rounded-lg",
+          footerBtnClass:
+            "absolute -top-[48px] right-[8px] w-[40px] h-[40px] bg-[#3e3e3e] " +
+            "flex justify-center items-center text-white " +
+            "rounded-lg",
+          containerClass:
+            "bg-gray-50 w-full max-w-[700px] min-h-dvh mx-auto relative",
+          viewBox: "0 0 200 200",
+          boxStyle: "width: 200px; height: 200px;",
+          footerText: "",
+          width: 200,
+          height: 200,
+          open: true,
+          footerOpen: true,
+          responsive: false,
+          toggle() {
+            this.open = !this.open;
+            this.sideContainer = `${defaultClass} ${
+              this.open ? "left-0" : "-left-[300px]"
+            }`;
+          },
+          footerToggle() {
+            this.footerOpen = !this.footerOpen;
+            this.footerContainer = `${footerDefaultClass} ${
+              this.footerOpen ? "bottom-0" : "-bottom-[180px]"
+            }`;
+          },
+          updateFooterText() {
+            const viewBox = `viewBox="0 0 ${this.width} ${this.height}"`;
+            const style = this.responsive
+              ? ""
+              : `style="width: ${this.width}px; height: ${this.height}px"`;
+            this.footerText = `<svg class="svg" ${viewBox} ${style}></svg>`;
+          },
+          init() {
+            this.$watch("width", () => {
+              if (!this.width) this.width = 0;
+              this.viewBox = `0 0 ${this.width} ${this.height}`;
+              this.boxStyle = this.responsive
+                ? ""
+                : `width: ${this.width}px; height: ${this.height}px`;
+              this.updateFooterText();
+            });
+            this.$watch("height", () => {
+              if (!this.height) this.height = 0;
+              this.viewBox = `0 0 ${this.width} ${this.height}`;
+              this.boxStyle = this.responsive
+                ? ""
+                : `width: ${this.width}px; height: ${this.height}px`;
+              this.updateFooterText();
+            });
+            this.$watch("responsive", () => {
+              this.boxStyle = this.responsive
+                ? ""
+                : `width: ${this.width}px; height: ${this.height}px`;
+              this.updateFooterText();
+            });
+            this.updateFooterText();
+          },
+        }));
+      });
+    </script>
+    <!-- Alpine Script: End -->
+  </body>
+</html>
