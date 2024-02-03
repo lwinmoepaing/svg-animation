@@ -1,0 +1,38 @@
+#Ghost_Layer {
+  transform-box: fill-box;
+}
+
+#Ghost_Layer * {
+  transition: all 0.2s ease-in-out;
+}
+
+#Ghost_Layer:hover #ghost_body {
+  cursor: pointer;
+  stroke: #58b947 !important;
+}
+
+#Ghost_Layer:hover #eye {
+  fill: #ed2024b3 !important;
+}
+
+#star_group {
+  transform-box: fill-box;
+}
+
+#Ghost_Layer:hover #star_group {
+  transform: rotate(15deg);
+}
+
+#Ghost_Layer:hover #star_group polygon {
+  stroke: #f37421 !important;
+  fill: white !important;
+}
+
+#Ghost_Layer:hover #stick {
+  fill: #b0509e !important;
+}
+
+#Ghost_Layer:hover #ballon_group > * {
+  stroke: #57C9E8 !important;
+  fill: white !important;
+}
