@@ -21,6 +21,13 @@
   animation: rotateWheel 1s linear infinite;
 }
 
+#Car_Body {
+  transform-origin: 50% 50%;
+}
+#Car_Body.animate {
+  animation: squeeze 0.5s ease-in infinite alternate;
+}
+
 @keyframes carMove {
   from {
     transform: translate(0);
@@ -36,5 +43,14 @@
   }
   to {
     transform: translate(0%, 0%) rotate(360deg);
+  }
+}
+
+@keyframes squeeze {
+  from {
+    transform: scale(1) translateY(0);
+  }
+  to {
+    transform: scale(1.02) translateY(-2px);
   }
 }
