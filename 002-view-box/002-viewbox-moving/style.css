@@ -1,0 +1,40 @@
+#Whole_Car *,
+#Environment * {
+  transform-box: fill-box;
+  transition: all 0.3s ease-in-out;
+}
+
+.showBorder {
+  border: 1px solid red;
+}
+
+.car-animation {
+  animation: carMove 3s linear infinite;
+}
+
+#Wheel_Group.animate > g {
+  transform-origin: 50% 50%;
+}
+#Wheel_Group.animate > g {
+  transition: all 0s ease-in-out;
+  transform: translate(0%, 0%) rotate(0);
+  animation: rotateWheel 1s linear infinite;
+}
+
+@keyframes carMove {
+  from {
+    transform: translate(0);
+  }
+  to {
+    transform: translate(-800px);
+  }
+}
+
+@keyframes rotateWheel {
+  from {
+    transform: translate(0%, 0%) rotate(0);
+  }
+  to {
+    transform: translate(0%, 0%) rotate(360deg);
+  }
+}
