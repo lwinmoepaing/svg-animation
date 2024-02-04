@@ -1,0 +1,42 @@
+#Hands *,
+#Environment *,
+#Hands-Unfix *,
+#Environment-Unfix * {
+  transform-box: fill-box;
+  transition: all 0.3s ease-in-out;
+}
+
+#Left-Hand.active,
+#Left-Hand-Unfix.active {
+  transform: rotate(-40deg) translateY(-3px) translateX(-17px);
+}
+
+#Right-Hand.active,
+#Right-Hand-Unfix.active {
+  transform: rotate(34deg) translateY(-48px) translateX(-7px);
+}
+
+.showBorder {
+  border: 1px solid red;
+}
+
+#Environment > path.active:nth-child(1),
+#Environment-Unfix > path.active:nth-child(1) {
+  transform: rotate(-10deg);
+}
+#Environment > path.active:nth-child(2),
+#Environment-Unfix > path.active:nth-child(2) {
+  transform: rotate(10deg);
+}
+#Environment > path.active:nth-child(3),
+#Environment-Unfix > path.active:nth-child(3) {
+  transform: rotate(-10deg) translateX(10px);
+}
+#Environment > path.active:nth-child(4),
+#Environment-Unfix > path.active:nth-child(4) {
+  transform: rotate(-10deg);
+}
+#Environment > path.active:nth-child(5),
+#Environment-Unfix > path.active:nth-child(5) {
+  transform: rotate(10deg);
+}
