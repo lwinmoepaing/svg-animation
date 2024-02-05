@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ViewBox - SVG | Lwin Moe Paing</title>
+    <title>Rectangle - SVG | Lwin Moe Paing</title>
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
@@ -18,12 +18,15 @@
           viewBox="0 0 100 100"
         >
           <template x-for="line in data" :key="line.id">
-            <line
-              :x1="line.x1"
-              :x2="line.x2"
-              :y1="line.y1"
-              :y2="line.y2"
+            <rect
+              :width="line.width"
+              :height="line.height"
+              :x="line.x"
+              :y="line.y"
+              :rx="line.rx"
+              :ry="line.ry"
               :stroke="line.stroke"
+              :fill="line.fill"
             />
           </template>
         </svg>
@@ -73,7 +76,7 @@
 
     <!-- Side Bar: Finished -->
     <div :class="sideContainer" x-cloak>
-      <h1 class="px-2 text-2xl mb-5">SVG Lines</h1>
+      <h1 class="px-2 text-2xl mb-5">SVG Rectangles</h1>
       <button :class="sideBtnClass" class="bg-rose-500" x-on:click="toggle">
         <svg
           fill="none"
@@ -105,66 +108,100 @@
             <div class="border-t mt-5 pt-5">
               <div class="grid grid-cols-4 gap-x-[20px] text-xs">
                 <div class="text-center">
-                  <p class="my-1">x1</p>
+                  <p class="my-1">x</p>
                   <input
                     type="number"
-                    class="w-full h-[40px] px-2 outline-none border rounded-md mb-3"
-                    placeholder="Enter x1"
-                    x-model="line.x1"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                    placeholder="Enter x"
+                    x-model="line.x"
                     min="0"
                   />
                 </div>
                 <div class="text-center">
-                  <p class="my-1">y1</p>
+                  <p class="my-1">y</p>
                   <input
                     type="number"
-                    class="w-full h-[40px] px-2 outline-none border rounded-md mb-3"
-                    placeholder="Enter y1"
-                    x-model="line.y1"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                    placeholder="Enter y"
+                    x-model="line.y"
                     min="0"
                   />
                 </div>
                 <div class="text-center">
-                  <p class="my-1">x2</p>
+                  <p class="my-1">rx</p>
                   <input
                     type="number"
-                    class="w-full h-[40px] px-2 outline-none border rounded-md mb-3"
-                    placeholder="Enter x2"
-                    x-model="line.x2"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                    placeholder="Enter rx"
+                    x-model="line.rx"
                     min="0"
                   />
                 </div>
                 <div class="text-center">
-                  <p class="my-1">y2</p>
+                  <p class="my-1">ry</p>
                   <input
                     type="number"
-                    class="w-full h-[40px] px-2 outline-none border rounded-md mb-3"
-                    placeholder="Enter y2"
-                    x-model="line.y2"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                    placeholder="Enter ry"
+                    x-model="line.ry"
                     min="0"
                   />
                 </div>
               </div>
               <div class="grid grid-cols-4 gap-x-[20px] text-xs">
-                <div class="col-span-3">
+                <div class="text-center">
+                  <p class="my-1">width</p>
+                  <input
+                    type="number"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                    placeholder="Enter width"
+                    x-model="line.width"
+                    min="0"
+                  />
+                </div>
+
+                <div class="text-center">
+                  <p class="my-1">height</p>
+                  <input
+                    type="number"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                    placeholder="Enter height"
+                    x-model="line.height"
+                    min="0"
+                  />
+                </div>
+
+                <div class="text-center">
+                  <p class="my-1">Stroke</p>
                   <input
                     type="text"
-                    class="w-full h-[40px] px-2 outline-none border rounded-md mb-3"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
                     placeholder="Enter Stroke"
                     x-model="line.stroke"
                   />
                 </div>
-                <div>
+
+                <div class="text-center">
+                  <p class="my-1">Fill</p>
+                  <input
+                    type="text"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                    placeholder="Enter Fill Color"
+                    x-model="line.fill"
+                  />
+                </div>
+                <div class="col-span-4">
                   <button
-                    class="w-full h-[40px] flex justify-center items-center rounded-lg border border-rose-500 text-rose-500 hover:text-white hover:bg-rose-500"
-                    x-on:click="removeLine(line.id)"
+                    class="relative w-full h-[26px] flex justify-center items-center rounded-lg border border-rose-500 text-rose-500 hover:text-white hover:bg-rose-500"
+                    x-on:click="removeItem(line.id)"
                   >
+                    Delete
                     <svg
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke-width="1.5"
                       stroke="currentColor"
-                      class="w-6 h-6"
+                      class="w-3 h-3 top-[0.5px] relative"
                     >
                       <path
                         stroke-linecap="round"
@@ -184,10 +221,12 @@
               </div>
             </div>
           </template>
+          
+          <hr class="mt-5" />
 
           <button
-            class="w-full h-[40px] flex justify-center items-center rounded-lg border border-rose-500 text-rose-500 hover:text-white hover:bg-rose-500"
-            x-on:click="addLine()"
+            class="mt-4 w-full h-[40px] flex justify-center items-center rounded-lg border border-rose-500 text-rose-500 hover:text-white hover:bg-rose-500"
+            x-on:click="addRectangle()"
           >
             Add New Line
           </button>
@@ -265,36 +304,33 @@
           data: [
             {
               id: uniqueId(),
-              x1: 10,
-              y1: 10,
-              x2: 20,
-              y2: 20,
-              stroke: "red",
-            },
-            {
-              id: uniqueId(),
-              x1: 40,
-              y1: 10,
-              x2: 20,
-              y2: 20,
-              stroke: "blue",
+              x: 10,
+              y: 10,
+              width: 20,
+              height: 20,
+              rx: 0,
+              ry: 0,
+              stroke: "#565656",
+              fill: "#ff4444",
             },
           ],
-          addLine() {
+          addRectangle() {
             this.data = [
               ...this.data,
               {
                 id: uniqueId(),
-                x1: 0,
-                y1: 0,
-                x2: 10,
-                y2: 0,
-                stroke: "green",
+                x: 60,
+                y: 60,
+                width: 30,
+                height: 20,
+                rx: 0,
+                ry: 0,
+                stroke: "black",
+                fill: "#565656",
               },
             ];
           },
-          removeLine(id) {
-            // console.log(id);
+          removeItem(id) {
             this.data = this.data.filter((data) => data.id !== id);
           },
           toggle() {
@@ -313,7 +349,7 @@
             const viewBox = `viewBox="0 0 100 100"`;
             const lineText = this.data.reduce(
               (cur, line) =>
-                `${cur}  <line x1='${line.x1}' y1='${line.y1}' x2='${line.x2}' y2='${line.y2}' stroke='${line.stroke}' />\n`,
+                `${cur}  <rect x='${line.x}' y='${line.y}'  rx='${line.rx}' ry='${line.ry}' width='${line.width}' height='${line.height}' stroke='${line.stroke}' fill='${line.fill}' />\n`,
               ``
             );
             this.footerText = `<svg class="svg" ${viewBox}>\n${lineText}</svg>`;
