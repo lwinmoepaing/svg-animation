@@ -457,7 +457,11 @@
             const distanceY =
               lpY == midY ? 0 : lpY > midY ? lpY - midY : midY - lpY;
             const resultY = midY < lpY ? midY - distanceY : midY + distanceY;
-            data.diffLines = { x: resultX, y: resultY };
+            data.diffLines = {
+              x: resultX,
+              y: resultY,
+              color: data.diffLines.color,
+            };
           },
 
           init() {
