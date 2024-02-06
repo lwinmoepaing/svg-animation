@@ -21,7 +21,7 @@
             <path
               :stroke="item.stroke"
               :fill="item.fill"
-              :d="`M${item.startPoint.x}, ${item.startPoint.y} ` + item.points.map(({x, y}) => `L${x},${y}`).join` `"
+              :d="`M${item.startPoint.x}, ${item.startPoint.y} ` + item.points.map(({x, y}) => `L${x},${y}`).join` ` + `${item.connectStart ? 'Z' : ''}`"
             ></path>
           </template>
         </svg>
@@ -101,7 +101,7 @@
 
           <template x-for="line in data" :key="line.id">
             <div class="border-t mt-5 pt-5">
-              <div class="grid grid-cols-2 gap-x-[20px] text-xs">
+              <div class="grid grid-cols-3 gap-x-[20px] text-xs">
                 <div class="text-center">
                   <p class="mt-1">Start XS</p>
                   <input
@@ -121,6 +121,18 @@
                     x-model="line.startPoint.y"
                     min="0"
                   />
+                </div>
+                <div class="text-center">
+                  <p class="mt-1">Connect</p>
+
+                  <div class="text-xs flex items-center justify-center mt-2">
+                    <input
+                      type="checkbox"
+                      class="mr-2"
+                      x-model="line.connectStart"
+                      :id="'connect-' + line.id"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -147,7 +159,7 @@
                     />
                   </div>
                   <div class="">
-                    <p class="my-1">&nbsp;</p>
+                    <p class="mb-1">&nbsp;</p>
                     <button
                       class="relative w-full h-[26px] flex justify-center items-center rounded-lg border border-rose-500 text-rose-500 hover:text-white hover:bg-rose-500"
                       x-on:click="line.points.splice(index, 1)"
@@ -247,7 +259,7 @@
             class="mt-4 w-full h-[40px] flex justify-center items-center rounded-lg border border-rose-500 text-rose-500 hover:text-white hover:bg-rose-500"
             x-on:click="addPathLine()"
           >
-            Add New Polygon
+            Add New PathLine
           </button>
         </div>
       </div>
@@ -331,6 +343,7 @@
                 { x: 40, y: 30 },
                 { x: 40, y: 10 },
               ],
+              connectStart: false,
             },
           ],
           addPathLine() {
@@ -340,12 +353,13 @@
                 id: uniqueId(),
                 stroke: "#ccc",
                 fill: "#ff4444",
-                startPoint: { x: 20, y: 20 },
+                startPoint: { x: 60, y: 80 },
                 points: [
                   { x: 80, y: 80 },
                   { x: 90, y: 90 },
                   { x: 80, y: 90 },
                 ],
+                connectStart: false,
               },
             ];
           },
@@ -371,7 +385,7 @@
                 `${cur}  <path d='M${line.startPoint.x},${
                   line.startPoint.y
                 } ${line.points.map(({ x, y }) => `L${x},${y}`)
-                  .join` `}' stroke='${line.stroke}' fill='${line.fill}' />\n`,
+                  .join` `} ${line.connectStart ? 'Z' : ''}' stroke='${line.stroke}' fill='${line.fill}' />\n`,
               ``
             );
             this.footerText = `<svg class="svg" ${viewBox}>\n${lineText}</svg>`;
