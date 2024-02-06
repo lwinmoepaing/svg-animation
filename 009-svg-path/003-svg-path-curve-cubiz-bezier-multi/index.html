@@ -15,20 +15,55 @@
         <svg
           class="svg"
           :class="showGrid ? 'show-grid' :''"
-          viewBox="0 0 100 100"
+          viewBox="0 0 200 200"
         >
           <template x-for="item in data" :key="item.id">
             <path
               :stroke="item.stroke"
               :fill="item.fill"
-              :d="`M${item.startPoint.x}, ${item.startPoint.y} C` + item.controls.map(({x, y}) => `${x},${y}`).join` ` + ` ${item.endPoint.x},${item.endPoint.y} ${item.connectStart ? 'Z' : ''}`"
+              :d="`M${item.startPoint.x}, ${item.startPoint.y} C` + item.controls.map(({x, y}) => `${x},${y}`).join` ` + ` S` + item.sPoints.map(({x, y}) => `${x},${y}`).join` ` +` ${item.connectStart ? 'Z' : ''}`"
             />
           </template>
 
           <template x-if="showGrid">
             <template x-for="item in data" :key="item.id">
+              <circle
+                :cx="item.startPoint.x"
+                :cy="item.startPoint.y"
+                r="3"
+                fill="#ff000065"
+              ></circle>
+            </template>
+          </template>
+
+          <template x-if="showGrid">
+            <template x-for="item in data" :key="item.id">
+              <circle
+                :cx="item.diffLines.x"
+                :cy="item.diffLines.y"
+                r="2"
+                fill="#c740c7cc"
+              ></circle>
+            </template>
+          </template>
+
+          <template x-if="showGrid">
+            <template x-for="item in data" :key="item.id">
               <template x-for="c in item.controls">
-                <circle :cx="c.x" :cy="c.y" r="1.4" fill="#0000ff79"></circle>
+                <circle :cx="c.x" :cy="c.y" r="2" fill="#0000ff79"></circle>
+              </template>
+            </template>
+          </template>
+
+          <template x-if="showGrid">
+            <template x-for="item in data" :key="item.id">
+              <template x-for="c in item.sPoints">
+                <circle
+                  :cx="c.x"
+                  :cy="c.y"
+                  :r="c.size"
+                  :fill="c.color"
+                ></circle>
               </template>
             </template>
           </template>
@@ -43,9 +78,9 @@
                     :x1="c.x"
                     :y1="c.y"
                     stroke="#0000ff44"
-                    stroke-dasharray="1"
-                    stroke-dashoffset="5"
-                    stroke-width="0.5"
+                    stroke-dasharray="2"
+                    stroke-dashoffset="10"
+                    stroke-width="0.8"
                   />
                 </template>
               </template>
@@ -55,16 +90,60 @@
           <template x-if="showGrid">
             <template x-for="item in data" :key="item.id">
               <template x-for="(c, index) in item.controls">
-                <template x-if="index === item.controls.length - 1">
+                <template
+                  x-if="index !== 0 && index === item.controls.length - 1"
+                >
                   <line
-                    :x2="item.endPoint.x"
-                    :y2="item.endPoint.y"
+                    :x2="item.controls[index-1].x"
+                    :y2="item.controls[index-1].y"
                     :x1="c.x"
                     :y1="c.y"
                     stroke="#0000ff44"
-                    stroke-dasharray="1"
-                    stroke-dashoffset="5"
-                    stroke-width="0.5"
+                    stroke-dasharray="2"
+                    stroke-dashoffset="10"
+                    stroke-width="0.8"
+                  />
+                </template>
+              </template>
+            </template>
+          </template>
+
+          <template x-if="showGrid">
+            <template x-for="item in data" :key="item.id">
+              <template x-for="(c, index) in item.sPoints">
+                <template
+                  x-if="index !== 0 && index === item.sPoints.length - 1"
+                >
+                  <line
+                    :x2="item.sPoints[index-1].x"
+                    :y2="item.sPoints[index-1].y"
+                    :x1="c.x"
+                    :y1="c.y"
+                    :stroke="item.sPoints[index-1].color"
+                    stroke-dasharray="2"
+                    stroke-dashoffset="10"
+                    stroke-width="0.8"
+                  />
+                </template>
+              </template>
+            </template>
+          </template>
+
+          <template x-if="showGrid">
+            <template x-for="item in data" :key="item.id">
+              <template x-for="(c, index) in item.controls">
+                <template
+                  x-if="index !== 0 && index !== item.controls.length - 1"
+                >
+                  <line
+                    :x2="item.diffLines.x"
+                    :y2="item.diffLines.y"
+                    :x1="c.x"
+                    :y1="c.y"
+                    stroke="#c740c7cc"
+                    stroke-dasharray="2"
+                    stroke-dashoffset="10"
+                    stroke-width="0.8"
                   />
                 </template>
               </template>
@@ -79,36 +158,23 @@
 
         <div
           x-show="showGrid"
-          class="w-[500px] mx-auto grid grid-cols-11 gap-x-[40px] absolute top-[24px] left-[102px]"
+          class="w-[530px] mx-auto flex gap-x-[2.3px] absolute top-[24px] left-[102px]"
         >
-          <span class="text-blue-500 text-xs">0</span>
-          <span class="text-blue-500 text-xs">10</span>
-          <span class="text-blue-500 text-xs">20</span>
-          <span class="text-blue-500 text-xs">30</span>
-          <span class="text-blue-500 text-xs">40</span>
-          <span class="text-blue-500 text-xs">50</span>
-          <span class="text-blue-500 text-xs">60</span>
-          <span class="text-blue-500 text-xs">70</span>
-          <span class="text-blue-500 text-xs">80</span>
-          <span class="text-blue-500 text-xs">90</span>
-          <span class="text-blue-500 text-xs">100</span>
+          <template x-for="no in gridData">
+            <span
+              class="text-blue-500 text-[10px] w-[22px] inline-block"
+              x-text="no"
+            ></span>
+          </template>
         </div>
 
         <div x-show="showGrid" class="absolute top-[44px] left-[60px]">
           <div
-            class="w-[30px] mx-auto grid grid-row-11 gap-y-[33px] text-right"
+            class="w-[30px] mx-auto grid grid-row-11 gap-y-[8.5px] text-right"
           >
-            <span class="text-rose-500 text-xs">0</span>
-            <span class="text-rose-500 text-xs">10</span>
-            <span class="text-rose-500 text-xs">20</span>
-            <span class="text-rose-500 text-xs">30</span>
-            <span class="text-rose-500 text-xs">40</span>
-            <span class="text-rose-500 text-xs">50</span>
-            <span class="text-rose-500 text-xs">60</span>
-            <span class="text-rose-500 text-xs">70</span>
-            <span class="text-rose-500 text-xs">80</span>
-            <span class="text-rose-500 text-xs">90</span>
-            <span class="text-rose-500 text-xs">100</span>
+            <template x-for="no in gridData">
+              <span class="text-rose-500 text-xs" x-text="no"></span>
+            </template>
           </div>
         </div>
       </div>
@@ -117,7 +183,7 @@
 
     <!-- Side Bar: Finished -->
     <div :class="sideContainer" x-cloak>
-      <h1 class="px-2 text-2xl mb-5">SVG Path Line</h1>
+      <h1 class="px-2 text-2xl mb-5">SVG Cubiz Curve</h1>
       <button :class="sideBtnClass" class="bg-rose-500" x-on:click="toggle">
         <svg
           fill="none"
@@ -152,7 +218,7 @@
                   <p class="mt-1">Start X</p>
                   <input
                     type="number"
-                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-1"
+                    class="w-full h-[26px] px-2 outline-none border text-rose-500 rounded-md mb-1"
                     placeholder="Enter x"
                     x-model="line.startPoint.x"
                     min="0"
@@ -162,7 +228,7 @@
                   <p class="mt-1">Start Y</p>
                   <input
                     type="number"
-                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-1"
+                    class="w-full h-[26px] px-2 outline-none border text-rose-500 rounded-md mb-1"
                     placeholder="Enter y"
                     x-model="line.startPoint.y"
                     min="0"
@@ -182,36 +248,36 @@
                 </div>
               </div>
 
-              <div class="grid grid-cols-3 gap-x-[20px] text-xs">
-                <div class="text-center">
-                  <p class="mt-1">end X</p>
-                  <input
-                    type="number"
-                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-1"
-                    placeholder="Enter x"
-                    x-model="line.endPoint.x"
-                    min="0"
-                  />
-                </div>
-                <div class="text-center">
-                  <p class="mt-1">end Y</p>
-                  <input
-                    type="number"
-                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-1"
-                    placeholder="Enter y"
-                    x-model="line.endPoint.y"
-                    min="0"
-                  />
-                </div>
-                <div class="text-center">
-                  <div
-                    class="text-xs flex items-center justify-center mt-2"
-                  ></div>
-                </div>
-              </div>
-
-              <p class="text-sm mt-5">Controls</p>
+              <p class="text-sm mt-5">C Command</p>
               <template x-for="(point, index) in line.controls">
+                <div class="grid grid-cols-2 gap-x-[20px] text-xs">
+                  <div class="text-center">
+                    <p class="mt-1" x-text="'x' + (index + 1 )"></p>
+                    <input
+                      type="number"
+                      class="w-full h-[26px] text-[#0000ff79] px-2 outline-none border rounded-md mb-1"
+                      placeholder="Enter x"
+                      x-model="point.x"
+                      min="0"
+                      x-on:change="updateDiffPoint()"
+                    />
+                  </div>
+                  <div class="text-center">
+                    <p class="mt-1" x-text="'y' + (index + 1 )"></p>
+                    <input
+                      type="number"
+                      class="w-full h-[26px] text-[#0000ff79] px-2 outline-none border rounded-md mb-1"
+                      placeholder="Enter y"
+                      x-model="point.y"
+                      min="0"
+                      x-on:change="updateDiffPoint()"
+                    />
+                  </div>
+                </div>
+              </template>
+
+              <p class="text-sm mt-5">S Command</p>
+              <template x-for="(point, index) in line.sPoints">
                 <div class="grid grid-cols-2 gap-x-[20px] text-xs">
                   <div class="text-center">
                     <p class="mt-1" x-text="'x' + (index + 1 )"></p>
@@ -221,6 +287,7 @@
                       placeholder="Enter x"
                       x-model="point.x"
                       min="0"
+                      :style="'color:'+ point.color"
                     />
                   </div>
                   <div class="text-center">
@@ -231,6 +298,7 @@
                       placeholder="Enter y"
                       x-model="point.y"
                       min="0"
+                      :style="'color:'+ point.color"
                     />
                   </div>
                 </div>
@@ -330,17 +398,29 @@
           open: true,
           footerOpen: true,
           showGrid: true,
+          gridData: [
+            0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
+            160, 170, 180, 190, 200,
+          ],
           data: [
             {
               id: uniqueId(),
-              stroke: "#dfdfdf",
-              fill: "#ff4444",
-              startPoint: { x: 10, y: 60 },
-              endPoint: { x: 90, y: 60 },
+              stroke: "#ff4444",
+              fill: "none",
+              startPoint: { x: 25, y: 100 },
               controls: [
-                { x: 20, y: 10 },
-                { x: 80, y: 10 },
+                { x: 25, y: 150 },
+                { x: 75, y: 150 },
+                { x: 75, y: 100 },
               ],
+              sPoints: [
+                { x: 100, y: 25, color: "#21d850e0", size: 2 },
+                { x: 150, y: 75, color: "orange", size: 3 },
+              ],
+              diffLines: {
+                x: 75,
+                y: 50,
+              },
               connectStart: false,
             },
           ],
@@ -366,15 +446,32 @@
               (cur, line) =>
                 `${cur}  <path d='M${line.startPoint.x},${
                   line.startPoint.y
-                } C${line.controls.map(({ x, y }) => `${x},${y}`).join` `} ${
-                  line.endPoint.x
-                },${line.endPoint.y} ${line.connectStart ? "Z" : ""}' stroke='${
+                } C${line.controls.map(({ x, y }) => `${x},${y}`)
+                  .join` `} S${line.sPoints.map(({ x, y }) => `${x},${y}`)
+                  .join` `} ${line.connectStart ? "Z" : ""}' stroke='${
                   line.stroke
                 }' fill='${line.fill}' />\n`,
               ``
             );
             this.footerText = `<svg class="svg" ${viewBox}>\n${lineText}</svg>`;
           },
+
+          updateDiffPoint() {
+            const data = this.data[0];
+            const cPoints = data.controls;
+            const { x: lpX, y: lpY } = cPoints[1];
+            const { x: midX, y: midY } = cPoints[2];
+            const distanceX =
+              lpX == midX ? 0 : lpX > midX ? lpX - midX : midX - lpX;
+            const resultX = midX < lpX ? midX - distanceX : midX + distanceX;
+
+            const distanceY =
+              lpY == midY ? 0 : lpY > midY ? lpY - midY : midY - lpY;
+            const resultY = midY < lpY ? midY - distanceY : midY + distanceY;
+            data.diffLines = { x: resultX, y: resultY };
+            console.log({ resultY, distanceY });
+          },
+
           init() {
             this.$watch("data", () => {
               this.updateFooterText();
