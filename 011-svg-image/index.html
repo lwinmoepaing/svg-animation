@@ -245,6 +245,9 @@
             this.footerText = `<svg class="svg" ${viewBox}>\n${imageElement}</svg>`;
           },
           init() {
+            this.$watch("image", () => {
+              this.updateFooterText();
+            });
             this.updateFooterText();
           },
         }));
