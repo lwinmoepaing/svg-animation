@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Path Arc Curve - SVG | Lwin Moe Paing</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+  </head>
+
+  <body x-data="container" class="hidden">
+    <!-- Container: Start -->
+    <div x-cloak>
+      <div :class="containerClass">
+        <svg
+          class="svg"
+          :class="showGrid ? 'show-grid' :''"
+          viewBox="0 0 200 200"
+        >
+          <template x-for="item in data" :key="item.id">
+            <path
+              :stroke="item.stroke"
+              :fill="item.fill"
+              :d="`M${item.startPoint.x}, ${item.startPoint.y} A${item.arcPoint.x},${item.arcPoint.y} ${item.arcPoint.axisRotation} ${item.arcPoint.largeArcFlag},${item.arcPoint.sweepFlag} ${item.finalPoint.x}, ${item.finalPoint.y} ${item.connectStart ? 'Z' : ''}`"
+            />
+          </template>
+
+          <template x-if="showGrid">
+            <template x-for="item in data" :key="item.id">
+              <circle
+                :cx="item.startPoint.x"
+                :cy="item.startPoint.y"
+                :fill="item.startPoint.color"
+                r="3"
+              />
+            </template>
+          </template>
+
+          <!-- <template x-if="showGrid">
+            <template x-for="item in data" :key="item.id">
+              <circle
+                :cx="item.diffLines.x"
+                :cy="item.diffLines.y"
+                :fill="item.diffLines.color"
+                r="3"
+              />
+            </template>
+          </template> -->
+
+          <template x-if="showGrid">
+            <template x-for="item in data" :key="item.id">
+              <circle
+                :cx="item.arcPoint.x"
+                :cy="item.arcPoint.y"
+                :fill="item.arcPoint.color"
+                r="3"
+              ></circle>
+            </template>
+          </template>
+
+          <template x-if="showGrid">
+            <template x-for="item in data" :key="item.id">
+              <circle
+                :cx="item.finalPoint.x"
+                :cy="item.finalPoint.y"
+                :fill="item.finalPoint.color"
+                r="3"
+              ></circle>
+            </template>
+          </template>
+        </svg>
+
+        <div
+          class="bg-black text-white text-xs font-mono inline-block rounded px-2 py-[2px] absolute top-0 right-0"
+          x-text="width + 'x' + height + 'px'"
+        ></div>
+
+        <div
+          x-show="showGrid"
+          class="w-[530px] mx-auto flex gap-x-[2.3px] absolute top-[24px] left-[102px]"
+        >
+          <template x-for="no in gridData">
+            <span
+              class="text-blue-500 text-[10px] w-[22px] inline-block"
+              x-text="no"
+            ></span>
+          </template>
+        </div>
+
+        <div x-show="showGrid" class="absolute top-[44px] left-[60px]">
+          <div
+            class="w-[30px] mx-auto grid grid-row-11 gap-y-[8.5px] text-right"
+          >
+            <template x-for="no in gridData">
+              <span class="text-rose-500 text-xs" x-text="no"></span>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Container: End -->
+
+    <!-- Side Bar: Finished -->
+    <div :class="sideContainer" x-cloak>
+      <h1 class="px-2 text-2xl mb-5">SVG Arc Curve</h1>
+      <button :class="sideBtnClass" class="bg-rose-500" x-on:click="toggle">
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+            x-show="open"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+            x-show="!open"
+          />
+        </svg>
+      </button>
+      <div>
+        <div class="mb-3">
+          <input type="checkbox" x-model="showGrid" id="showGrid" />
+          <label for="showGrid">Show Grid</label>
+
+          <template x-for="line in data" :key="line.id">
+            <div class="border-t mt-5 pt-5">
+              <div class="grid grid-cols-3 gap-x-[20px] text-xs">
+                <div class="text-center">
+                  <p class="mt-1">Start X</p>
+                  <input
+                    type="number"
+                    class="w-full h-[26px] px-2 outline-none border text-rose-500 rounded-md mb-1"
+                    placeholder="Enter x"
+                    x-model="line.startPoint.x"
+                    :style="'color:' + line.startPoint.color"
+                    min="0"
+                  />
+                </div>
+                <div class="text-center">
+                  <p class="mt-1">Start Y</p>
+                  <input
+                    type="number"
+                    class="w-full h-[26px] px-2 outline-none border text-rose-500 rounded-md mb-1"
+                    placeholder="Enter y"
+                    x-model="line.startPoint.y"
+                    :style="'color:' + line.startPoint.color"
+                    min="0"
+                  />
+                </div>
+                <div class="text-center">
+                  <p class="mt-1">Connect</p>
+
+                  <div class="text-xs flex items-center justify-center mt-2">
+                    <input
+                      type="checkbox"
+                      class="mr-2"
+                      x-model="line.connectStart"
+                      :id="'connect-' + line.id"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <p class="text-sm mt-5">A Command</p>
+              <div class="grid grid-cols-2 gap-x-[20px] text-xs">
+                <div class="text-center">
+                  <p class="mt-1">Arc X</p>
+                  <input
+                    type="number"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-1"
+                    placeholder="Enter x"
+                    x-model="line.arcPoint.x"
+                    min="0"
+                    :style="'color:'+ line.arcPoint.color"
+                  />
+                </div>
+                <div class="text-center">
+                  <p class="mt-1">Arc Y</p>
+                  <input
+                    type="number"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-1"
+                    placeholder="Enter y"
+                    x-model="line.arcPoint.y"
+                    min="0"
+                    :style="'color:'+ line.arcPoint.color"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-x-[20px] text-xs">
+                <div class="text-center">
+                  <p class="mt-1">Rotation</p>
+                  <input
+                    type="number"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-1"
+                    placeholder="Enter Axis Rotation"
+                    x-model="line.arcPoint.axisRotation"
+                    min="0"
+                    :style="'color:'+ line.arcPoint.color"
+                  />
+                </div>
+                <div class="text-center">
+                  <p class="mt-1">Lg Arc Flag</p>
+
+                  <select
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-1"
+                    :style="'color:'+ line.arcPoint.color"
+                    x-on:change="line.arcPoint.largeArcFlag = +$event.target.value"
+                  >
+                    <option
+                      value="0"
+                      :selected="line.arcPoint.largeArcFlag == 0"
+                    >
+                      0
+                    </option>
+                    <option
+                      value="1"
+                      :selected="line.arcPoint.largeArcFlag == 1"
+                    >
+                      1
+                    </option>
+                  </select>
+                </div>
+                <div class="text-center">
+                  <p class="mt-1">Sweep Flag</p>
+                  <select
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-1"
+                    :style="'color:'+ line.arcPoint.color"
+                    x-on:change="line.arcPoint.sweepFlag = +$event.target.value"
+                  >
+                    <option value="0" :selected="line.arcPoint.sweepFlag == 0">
+                      0
+                    </option>
+                    <option value="1" :selected="line.arcPoint.sweepFlag == 1">
+                      1
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-x-[20px] text-xs">
+                <div class="text-center">
+                  <p class="mt-1">Final X</p>
+                  <input
+                    type="number"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-1"
+                    placeholder="Enter x"
+                    x-model="line.finalPoint.x"
+                    min="0"
+                    :style="'color:'+ line.finalPoint.color"
+                  />
+                </div>
+                <div class="text-center">
+                  <p class="mt-1">Final Y</p>
+                  <input
+                    type="number"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-1"
+                    placeholder="Enter y"
+                    x-model="line.finalPoint.y"
+                    min="0"
+                    :style="'color:'+ line.finalPoint.color"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-x-[20px] text-xs">
+                <div class="text-center">
+                  <p class="my-1">Stroke</p>
+                  <input
+                    type="text"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                    placeholder="Enter Stroke"
+                    x-model="line.stroke"
+                  />
+                </div>
+
+                <div class="text-center">
+                  <p class="my-1">Fill</p>
+                  <input
+                    type="text"
+                    class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                    placeholder="Enter Fill Color"
+                    x-model="line.fill"
+                  />
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+    <!-- Side Bar: End -->
+
+    <!-- Footer-Console: Start -->
+    <div :class="footerContainer">
+      <textarea
+        class="text-sm text-green-500 font-mono block w-full bg-[#3e3e3e] min-h-[150px]"
+        x-text="footerText"
+        readonly
+      ></textarea>
+      <button :class="footerBtnClass" x-on:click="footerToggle">
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+            x-show="footerOpen"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+            x-show="!footerOpen"
+          />
+        </svg>
+      </button>
+    </div>
+    <!-- Footer-Console: End -->
+
+    <!-- Alpine Script: Start -->
+    <script>
+      const uniqueId = () => {
+        const dateString = Date.now().toString(36);
+        const randomness = Math.random().toString(36).substr(2);
+        return dateString + randomness;
+      };
+
+      document.addEventListener("alpine:init", () => {
+        document.body.classList.remove("hidden");
+        let defaultClass =
+          "overflow-auto w-[300px] border-r border-zinc-100 fixed h-dvh top-0 p-[20px] bg-white transition-all transition ease-in-out delay-150";
+        let footerDefaultClass =
+          "p-[20px] rounded-t-md fixed bottom-0 h-[180px] max-w-[700px] w-full mx-auto bg-[#3e3e3e] w-full left-[50%] -translate-x-1/2 transition-all transition ease-in-out delay-150";
+
+        Alpine.data("container", () => ({
+          footerContainer: `${footerDefaultClass} bottom-0`,
+          sideContainer: `${defaultClass} left-0`,
+          sideBtnClass:
+            "absolute top-[12px] -right-[48px] w-[40px] h-[40px] bg-zinc-100 " +
+            "flex justify-center items-center " +
+            "rounded-lg",
+          footerBtnClass:
+            "absolute -top-[48px] right-[8px] w-[40px] h-[40px] bg-[#3e3e3e] " +
+            "flex justify-center items-center text-white " +
+            "rounded-lg",
+          containerClass:
+            "bg-gray-50 w-full max-w-[700px] min-h-dvh mx-auto relative pt-12",
+          footerText: "",
+          width: 200,
+          height: 200,
+          open: true,
+          footerOpen: true,
+          showGrid: true,
+          gridData: [
+            0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
+            160, 170, 180, 190, 200,
+          ],
+          data: [
+            {
+              id: uniqueId(),
+              stroke: "#ff4444",
+              fill: "none",
+              startPoint: { x: 10, y: 50, color: "#0000ff79" },
+              arcPoint: {
+                x: 40,
+                y: 20,
+                color: "black",
+                sweepFlag: 1,
+                largeArcFlag: 0,
+                axisRotation: 0,
+              },
+              finalPoint: { x: 70, y: 50, color: "#f92a66" },
+              connectStart: false,
+            },
+          ],
+          removeItem(id) {
+            this.data = this.data.filter((data) => data.id !== id);
+          },
+          toggle() {
+            this.open = !this.open;
+            this.sideContainer = `${defaultClass} ${
+              this.open ? "left-0" : "-left-[300px]"
+            }`;
+          },
+          footerToggle() {
+            this.footerOpen = !this.footerOpen;
+            this.footerContainer = `${footerDefaultClass} ${
+              this.footerOpen ? "bottom-0" : "-bottom-[180px]"
+            }`;
+          },
+          updateFooterText() {
+            const viewBox = `viewBox="0 0 200 200"`;
+
+            const lineText = this.data.reduce(
+              (cur, line) =>
+                `${cur}  <path d='M${line.startPoint.x},${line.startPoint.y} A${
+                  line.arcPoint.x
+                },${line.arcPoint.y} ${line.arcPoint.axisRotation} ${
+                  line.arcPoint.largeArcFlag
+                },${line.arcPoint.sweepFlag} ${line.finalPoint.x},${
+                  line.finalPoint.y
+                } ${line.connectStart ? "Z" : ""}' stroke='${
+                  line.stroke
+                }' fill='${line.fill}' />\n`,
+              ``
+            );
+            this.footerText = `<svg class="svg" ${viewBox}>\n${lineText}</svg>`;
+          },
+          init() {
+            this.$watch("data", () => {
+              this.updateFooterText();
+            });
+            this.updateFooterText();
+          },
+        }));
+      });
+
+      // Polyfill
+      (function () {
+        var templates = document.querySelectorAll(
+          "svg template, svg template template"
+        );
+        var el, template, attribs, attrib, count, child, content;
+        for (var i = 0; i < templates.length; i++) {
+          el = templates[i];
+          template = el.ownerDocument.createElement("template");
+          el.parentNode.insertBefore(template, el);
+          attribs = el.attributes;
+          count = attribs.length;
+          while (count-- > 0) {
+            attrib = attribs[count];
+            template.setAttribute(attrib.name, attrib.value);
+            el.removeAttribute(attrib.name);
+          }
+          el.parentNode.removeChild(el);
+          content = template.content;
+          while ((child = el.firstChild)) {
+            content.appendChild(child);
+          }
+        }
+      })();
+    </script>
+    <!-- Alpine Script: End -->
+  </body>
+</html>
