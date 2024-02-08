@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Filter Blending - SVG | Lwin Moe Paing</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+  </head>
+  <body x-data="container" class="hidden">
+    <!-- Container: Start -->
+    <div x-cloak>
+      <div :class="containerClass">
+        <svg
+          class="svg"
+          :class="showGrid ? 'show-grid' :''"
+          viewBox="0 0 200 200"
+        >
+          <filter id="blending-filter">
+            <template x-if="data.isConnectFloodMode">
+              <feFlood
+                :flood-opacity="data.opacity"
+                :flood-color="data.color"
+                :result="data.isConnectFloodMode ? 'FLOOD' : ''"
+              />
+            </template>
+
+            <template x-if="data.isConnectBlendMode">
+              <feBlend
+                in="SourceGraphic"
+                in2="FLOOD"
+                :mode="data.mode"
+                :result="data.isConnectBlendMode ? 'BLEND' : ''"
+              />
+            </template>
+          </filter>
+
+          <image
+            x="0"
+            y="0"
+            href="blending.png"
+            width="100%"
+            height="100%"
+            :filter="(data.isConnectFloodMode) ? `url('#blending-filter')` : ''"
+          />
+        </svg>
+
+        <div
+          class="bg-black text-white text-xs font-mono inline-block rounded px-2 py-[2px] absolute top-0 right-0"
+          x-text="width + 'x' + height + 'px'"
+        ></div>
+
+        <div
+          x-show="showGrid"
+          class="w-[530px] mx-auto flex gap-x-[2.3px] absolute top-[24px] left-[102px]"
+        >
+          <template x-for="no in gridData">
+            <span
+              class="text-blue-500 text-[10px] w-[22px] inline-block"
+              x-text="no"
+            ></span>
+          </template>
+        </div>
+
+        <div x-show="showGrid" class="absolute top-[44px] left-[60px]">
+          <div
+            class="w-[30px] mx-auto grid grid-row-11 gap-y-[8.5px] text-right"
+          >
+            <template x-for="no in gridData">
+              <span class="text-rose-500 text-xs" x-text="no"></span>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Container: End -->
+
+    <!-- Side Bar: Start -->
+    <div :class="sideContainer">
+      <h1 class="px-2 text-2xl mb-5">Filter Blending</h1>
+      <button :class="sideBtnClass" class="bg-rose-500" x-on:click="toggle">
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+            x-show="open"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+            x-show="!open"
+          />
+        </svg>
+      </button>
+      <div>
+        <div class="mb-3">
+          <input type="checkbox" x-model="showGrid" id="showGrid" />
+          <label for="showGrid">Show Grid</label>
+
+          <div class="border-t mt-5 pt-5">
+            <div class="text-xs flex flex-row my-[10px]">
+              <p class="mt-1 mr-3 flex-1">Color</p>
+
+              <input
+                x-model="data.color"
+                class="w-[180px] py-[2px] px-[5px] outline-none border rounded-md"
+              />
+            </div>
+
+            <div class="text-xs flex flex-row my-[10px]">
+              <p class="mt-1 mr-3 flex-1">Mode</p>
+
+              <select
+                x-model="data.mode"
+                class="w-[180px] py-[2px] px-[5px] outline-none border rounded-md"
+              >
+                <template x-for="item in options.mode" :id="item" x-cloak>
+                  <option
+                    :value="item"
+                    x-text="item"
+                    x-bind:selected="data.mode === item"
+                  ></option>
+                </template>
+              </select>
+            </div>
+
+            <div class="text-xs flex flex-row my-[10px]">
+              <p class="mt-1 mr-3 flex-1" x-text="'Op('+ data.opacity +')'"></p>
+
+              <input
+                type="range"
+                min="0"
+                max="1"
+                x-model="data.opacity"
+                id="rangeSlider"
+                class="w-[180px] py-[2px] px-[5px] outline-none border rounded-md"
+                step=".1"
+              />
+            </div>
+
+            <div class="grid grid-cols-2 gap-x-[20px]">
+              <div class="text-xs mt-2">
+                <input
+                  type="checkbox"
+                  class="mr-2 relative top-[2px]"
+                  x-model="data.isConnectBlendMode"
+                  id="blendMode"
+                />
+                <label for="blendMode">Blend Mode</label>
+              </div>
+              <div class="text-xs mt-2">
+                <input
+                  type="checkbox"
+                  class="mr-2 relative top-[2px]"
+                  x-model="data.isConnectFloodMode"
+                  id="floodMode"
+                />
+                <label for="floodMode">Flood Mode</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Side Bar: End -->
+
+    <!-- Right Side: Start -->
+    <div></div>
+    <!-- Right Side: Finished -->
+
+    <!-- Footer-Console: Start -->
+    <div :class="footerContainer">
+      <textarea
+        class="text-xs text-green-500 font-mono block w-full bg-[#3e3e3e] min-h-[150px]"
+        x-text="footerText"
+        readonly
+      ></textarea>
+      <button :class="footerBtnClass" x-on:click="footerToggle">
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+            x-show="footerOpen"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+            x-show="!footerOpen"
+          />
+        </svg>
+      </button>
+    </div>
+    <!-- Footer-Console: End -->
+
+    <!-- Alpine Script: Start -->
+    <script>
+      const uniqueId = () => {
+        const dateString = Date.now().toString(36);
+        const randomness = Math.random().toString(36).substr(2);
+        return dateString + randomness;
+      };
+
+      document.addEventListener("alpine:init", () => {
+        document.body.classList.remove("hidden");
+        let defaultClass =
+          "overflow-auto w-[300px] border-r border-zinc-100 fixed h-dvh top-0 p-[20px] bg-white transition-all transition ease-in-out delay-150";
+        let footerDefaultClass =
+          "p-[10px] rounded-t-md fixed bottom-0 h-[180px] max-w-[700px] w-full mx-auto bg-[#3e3e3e] w-full left-[50%] -translate-x-1/2 transition-all transition ease-in-out delay-150";
+
+        Alpine.data("container", () => ({
+          footerContainer: `${footerDefaultClass} bottom-0`,
+          sideContainer: `${defaultClass} left-0`,
+          sideBtnClass:
+            "absolute top-[12px] -right-[48px] w-[40px] h-[40px] bg-zinc-100 " +
+            "flex justify-center items-center " +
+            "rounded-lg",
+          footerBtnClass:
+            "absolute -top-[48px] right-[8px] w-[40px] h-[40px] bg-[#3e3e3e] " +
+            "flex justify-center items-center text-white " +
+            "rounded-lg",
+          containerClass:
+            "bg-gray-50 w-full max-w-[700px] min-h-dvh mx-auto relative pt-12",
+          footerText: "",
+          width: 200,
+          height: 200,
+          open: true,
+          footerOpen: true,
+          showGrid: true,
+          gridData: [
+            0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
+            160, 170, 180, 190, 200,
+          ],
+          options: {
+            mode: [
+              "normal",
+              "multiply",
+              "screen",
+              "overlay",
+              "darkent",
+              "lighten",
+              "color-dodge",
+              "color-burn",
+              "hard-light",
+              "soft-light",
+              "difference",
+              "hue",
+              "saturation",
+              "color",
+              "luminosity",
+            ],
+          },
+          data: {
+            color: "blue",
+            mode: "color-burn",
+            opacity: 1,
+            isConnectBlendMode: true,
+            isConnectFloodMode: true,
+          },
+          removeItem(id) {
+            this.data = this.data.filter((data) => data.id !== id);
+          },
+          toggle() {
+            this.open = !this.open;
+            this.sideContainer = `${defaultClass} ${
+              this.open ? "left-0" : "-left-[300px]"
+            }`;
+          },
+          footerToggle() {
+            this.footerOpen = !this.footerOpen;
+            this.footerContainer = `${footerDefaultClass} ${
+              this.footerOpen ? "bottom-0" : "-bottom-[180px]"
+            }`;
+          },
+          updateFooterText() {
+            const viewBox = `viewBox="0 0 200 200"`;
+            let svgContent = `  <filter id="blending-filter">\n`;
+            svgContent += `    <feFlood flood-opacity="${
+              this.data.opacity
+            }" flood-color="${this.data.color}" result="${
+              this.data.isConnectFloodMode ? "FLOOD" : ""
+            }"/> \n`;
+            svgContent += `    <feBlend in="SourceGraphic" in2="FLOOD" mode="${
+              this.data.mode
+            }" result="${this.data.isConnectBlendMode ? "BLEND" : ""}"/>\n`;
+            svgContent += `  </filter>\n`;
+
+            const imgContent = `  <image x="0" y="0" width="100%" height="100%" ${
+              this.data.isConnectFloodMode
+                ? `filter="url('#blending-filter')"`
+                : ""
+            }/>`;
+
+            this.footerText = `<svg class="svg" ${viewBox}>\n${svgContent}${imgContent}\n</svg>`;
+          },
+          init() {
+            this.$watch("data", () => {
+              this.updateFooterText();
+            });
+            this.updateFooterText();
+          },
+        }));
+      });
+
+      // Polyfill
+      (function () {
+        var templates = document.querySelectorAll(
+          "svg template, svg template template"
+        );
+        var el, template, attribs, attrib, count, child, content;
+        for (var i = 0; i < templates.length; i++) {
+          el = templates[i];
+          template = el.ownerDocument.createElement("template");
+          el.parentNode.insertBefore(template, el);
+          attribs = el.attributes;
+          count = attribs.length;
+          while (count-- > 0) {
+            attrib = attribs[count];
+            template.setAttribute(attrib.name, attrib.value);
+            el.removeAttribute(attrib.name);
+          }
+          el.parentNode.removeChild(el);
+          content = template.content;
+          while ((child = el.firstChild)) {
+            content.appendChild(child);
+          }
+        }
+      })();
+    </script>
+    <!-- Alpine Script: End -->
+  </body>
+</html>
