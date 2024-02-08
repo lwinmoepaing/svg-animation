@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SVG Filter vs CSS Filter</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="flex flex-row max-w-[1000px] mx-auto">
+      <div class="w-full max-w-[260px] mx-auto mt-[40px] border-r border-[#dfdfdf] pr-[20px] pl-[20px]">
+        <h2 class="text-xl mb-[40px] text-center">CSS Blur [4px]</h2>
+        <div class="rounded-xl overflow-hidden">
+          <img src="smile.webp" class="w-full filter-img" />
+        </div>
+        <h2 class="text-center my-[10px]">CSS: blur(4px)</h2>
+      </div>
+
+      <div class="w-full mx-auto px-[20px] mt-[40px]">
+        <h2 class="text-xl mb-[40px] text-center">SVG Blur</h2>
+        <div class="grid grid-cols-3 gap-[20px]">
+          <div>
+            <svg class="svg rounded-xl" viewBox="0 0 200 200">
+              <filter id="horizontal">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="5, 0" />
+              </filter>
+              <image
+                x="0"
+                y="0"
+                href="smile.webp"
+                width="200"
+                height="200"
+                filter="url(#horizontal)"
+              />
+            </svg>
+
+            <h2 class="text-center my-[10px]">Horizontal SVG Blur</h2>
+          </div>
+
+          <div>
+            <svg class="svg rounded-xl" viewBox="0 0 200 200">
+              <filter id="vertical">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="0, 4" />
+              </filter>
+              <image
+                x="0"
+                y="0"
+                href="smile.webp"
+                width="200"
+                height="200"
+                filter="url(#vertical)"
+              />
+            </svg>
+            <h2 class="text-center my-[10px]">Vertical SVG Blur</h2>
+          </div>
+
+          <div>
+            <svg class="svg rounded-xl" viewBox="0 0 200 200">
+              <filter id="both">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+              </filter>
+              <image
+                x="0"
+                y="0"
+                href="smile.webp"
+                width="200"
+                height="200"
+                filter="url(#both)"
+              />
+            </svg>
+            <h2 class="text-center my-[10px]">
+              Horizontal + Vertical SVG Blur
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
