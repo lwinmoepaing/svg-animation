@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Defs - SVG | Lwin Moe Paing</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+  </head>
+  <body x-data="container max-w-[700px] mx-auto">
+    <svg class="svg" viewBox="0 0 300 300">
+      <defs>
+        <g id="nested_circle">
+          <circle cx="30" cy="30" r="15" stroke="red" fill="black" />
+          <circle cx="30" cy="30" r="5" stroke="white" fill="red" />
+        </g>
+      </defs>
+
+      <use xlink:href="#nested_circle" x="0" y="0" />
+      <use xlink:href="#nested_circle" x="40" y="0" />
+      <use xlink:href="#nested_circle" x="80" y="0" />
+    </svg>
+
+    <!-- Alpine Script: Start -->
+    <script>
+      const uniqueId = () => {
+        const dateString = Date.now().toString(36);
+        const randomness = Math.random().toString(36).substr(2);
+        return dateString + randomness;
+      };
+
+      // Polyfill
+      (function () {
+        var templates = document.querySelectorAll("svg template");
+        var el, template, attribs, attrib, count, child, content;
+        for (var i = 0; i < templates.length; i++) {
+          el = templates[i];
+          template = el.ownerDocument.createElement("template");
+          el.parentNode.insertBefore(template, el);
+          attribs = el.attributes;
+          count = attribs.length;
+          while (count-- > 0) {
+            attrib = attribs[count];
+            template.setAttribute(attrib.name, attrib.value);
+            el.removeAttribute(attrib.name);
+          }
+          el.parentNode.removeChild(el);
+          content = template.content;
+          while ((child = el.firstChild)) {
+            content.appendChild(child);
+          }
+        }
+      })();
+    </script>
+    <!-- Alpine Script: End -->
+  </body>
+</html>

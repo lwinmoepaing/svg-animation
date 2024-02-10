@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Group - SVG | Lwin Moe Paing</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+  </head>
+  <body x-data="container max-w-[700px] mx-auto">
+    <svg class="svg" viewBox="0 0 300 300">
+      <g id="rects-group">
+        <rect width="60" height="30" x="20" y="20" stroke="black" fill="red" />
+        <rect width="60" height="30" x="100" y="60" stroke="black" fill="red" />
+      </g>
+    </svg>
+
+    <!-- Alpine Script: Start -->
+    <script>
+      const uniqueId = () => {
+        const dateString = Date.now().toString(36);
+        const randomness = Math.random().toString(36).substr(2);
+        return dateString + randomness;
+      };
+
+      // Polyfill
+      (function () {
+        var templates = document.querySelectorAll("svg template");
+        var el, template, attribs, attrib, count, child, content;
+        for (var i = 0; i < templates.length; i++) {
+          el = templates[i];
+          template = el.ownerDocument.createElement("template");
+          el.parentNode.insertBefore(template, el);
+          attribs = el.attributes;
+          count = attribs.length;
+          while (count-- > 0) {
+            attrib = attribs[count];
+            template.setAttribute(attrib.name, attrib.value);
+            el.removeAttribute(attrib.name);
+          }
+          el.parentNode.removeChild(el);
+          content = template.content;
+          while ((child = el.firstChild)) {
+            content.appendChild(child);
+          }
+        }
+      })();
+    </script>
+    <!-- Alpine Script: End -->
+  </body>
+</html>
