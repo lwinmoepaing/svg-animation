@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fill - SVG | Lwin Moe Paing</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+  </head>
+  <body x-data="container" class="hidden">
+    <!-- Container: Start -->
+    <div x-cloak>
+      <div :class="containerClass">
+        <svg
+          class="svg"
+          :class="showGrid ? 'show-grid' :''"
+          viewBox="0 0 100 100"
+        >
+          <style xmlns="http://www.w3.org/2000/svg">
+            .cls-1 {
+              fill: none;
+              stroke: #231f20;
+              stroke-linecap: round;
+              stroke-linejoin: round;
+            }
+          </style>
+
+          <rect
+            :width="line.width"
+            :height="line.height"
+            :x="line.x"
+            :y="line.y"
+            :rx="line.rx"
+            :ry="line.ry"
+            :stroke="line.stroke"
+            :stroke-width="line.strokeWidth"
+            :stroke-linecap="line.strokeLinecap"
+            :stroke-linejoin="line.strokeLinejoin"
+            :stroke-opacity="line.strokeOpacity"
+            :stroke-dasharray="line.strokeDashArray.reduce((cur, next) => `${cur}${next !== '0' ? next : ''} `, '')"
+            :stroke-dashoffset="line.strokeDashOffset"
+            :fill="line.fill"
+            :fill-opacity="line.fillOpacity"
+            :fill-rule="line.fillRule"
+            :class="line.makeTransition ? 'transition-all transition ease-in-out duration-500':''"
+          />
+
+          <polygon
+            fill-rule="nonzero"
+            stroke="red"
+            points="50,0 21,90 98,35 2,35 79,90"
+            :stroke="line.stroke"
+            :stroke-width="line.strokeWidth"
+            :stroke-linecap="line.strokeLinecap"
+            :stroke-linejoin="line.strokeLinejoin"
+            :stroke-opacity="line.strokeOpacity"
+            :stroke-dasharray="line.strokeDashArray.reduce((cur, next) => `${cur}${next !== '0' ? next : ''} `, '')"
+            :stroke-dashoffset="line.strokeDashOffset"
+            :fill="line.fill"
+            :fill-opacity="line.fillOpacity"
+            :fill-rule="line.fillRule"
+            :class="line.makeTransition ? 'transition-all transition ease-in-out duration-500':''"
+          />
+        </svg>
+
+        <div
+          class="bg-black text-white text-xs font-mono inline-block rounded px-2 py-[2px] absolute top-0 right-0"
+          x-text="width + 'x' + height + 'px'"
+        ></div>
+
+        <div
+          x-show="showGrid"
+          class="w-[500px] mx-auto grid grid-cols-11 gap-x-[40px] absolute top-[24px] left-[102px]"
+        >
+          <template x-for="value in gridData">
+            <span class="text-blue-500 text-xs" x-text="value"></span>
+          </template>
+        </div>
+
+        <div x-show="showGrid" class="absolute top-[44px] left-[60px]">
+          <div
+            class="w-[30px] mx-auto grid grid-row-11 gap-y-[33px] text-right"
+          >
+            <template x-for="value in gridData">
+              <span class="text-rose-500 text-xs" x-text="value"></span>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Container: End -->
+
+    <!-- Side Bar: Finished -->
+    <div :class="sideContainer" x-cloak>
+      <h1 class="px-2 text-2xl mb-5">SVG Stroke</h1>
+      <button :class="sideBtnClass" class="bg-rose-500" x-on:click="toggle">
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+            x-show="open"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+            x-show="!open"
+          />
+        </svg>
+      </button>
+      <div>
+        <div class="mb-3">
+          <input type="checkbox" x-model="showGrid" id="showGrid" />
+          <label for="showGrid">Show Grid</label>
+          <div class="border-t mt-5 pt-5">
+            <div class="grid grid-cols-3 gap-x-[20px] text-xs">
+              <div class="text-center">
+                <p class="my-1 text-xs">Fill</p>
+                <input
+                  type="text"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter Fill Color"
+                  x-model="line.fill"
+                />
+              </div>
+              <div class="text-center">
+                <p class="my-1 text-xs">Rules</p>
+
+                <select
+                  x-model="line.fillRule"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                >
+                  <template
+                    x-for="item in options.fillRules"
+                    x-cloak
+                  >
+                    <option
+                      x-text="item"
+                      x-bind:selected="line.fillRule === item"
+                    ></option>
+                  </template>
+                </select>
+              </div>
+              <div class="text-center">
+                <p class="my-1 text-xs">Fill Opacity</p>
+                <input
+                  type="text"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter Fill Color"
+                  x-model="line.fillOpacity"
+                  min="0"
+                  max="1"
+                />
+              </div>
+            </div>
+
+            <hr  class="my-[20px]"/>
+
+            <div class="grid grid-cols-3 gap-x-[20px] text-xs">
+              <div class="text-center">
+                <p class="my-1 text-xs">Stroke</p>
+                <input
+                  type="text"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter Stroke"
+                  x-model="line.stroke"
+                />
+              </div>
+
+              <div class="text-center">
+                <p class="my-1 text-xs">Stroke-W</p>
+                <input
+                  type="number"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter Stroke"
+                  x-model="line.strokeWidth"
+                />
+              </div>
+
+              <div class="text-center">
+                <p class="mt-1">Animation</p>
+
+                <div class="text-xs flex items-center justify-center mt-2">
+                  <input
+                    type="checkbox"
+                    class="mr-2"
+                    x-model="line.makeTransition"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-x-[20px] text-xs">
+              <div class="text-center">
+                <p
+                  class="my-1 text-xs"
+                  x-text="'Stroke-Opacity['+line.strokeOpacity+']'"
+                ></p>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  x-model="line.strokeOpacity"
+                  id="rangeSlider"
+                  step=".1"
+                />
+              </div>
+
+              <div class="text-center">
+                <p class="my-1 text-xs">Stroke-Linecap</p>
+                <select
+                  x-model="line.strokeLinecap"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                >
+                  <option value="butt">butt</option>
+                  <option value="square">square</option>
+                  <option value="round">round</option>
+                </select>
+              </div>
+
+              <div class="text-center">
+                <p class="my-1 text-xs">Stroke-Linejoin</p>
+                <select
+                  x-model="line.strokeLinejoin"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                >
+                  <option value="miter">miter</option>
+                  <option value="bevel">bevel</option>
+                  <option value="round">round</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-x-[20px] text-xs">
+              <div class="text-center">
+                <p class="my-1">dasharray-1</p>
+                <input
+                  type="number"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter x"
+                  x-model="line.strokeDashArray[0]"
+                  min="0"
+                />
+              </div>
+              <div class="text-center">
+                <p class="my-1">dasharray-2</p>
+                <input
+                  type="number"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter y"
+                  x-model="line.strokeDashArray[1]"
+                  min="0"
+                />
+              </div>
+              <div class="text-center">
+                <p class="my-1">dasharray-3</p>
+                <input
+                  type="number"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter rx"
+                  x-model="line.strokeDashArray[2]"
+                  min="0"
+                />
+              </div>
+            </div>
+
+            <div class="text-center text-xs">
+              <p class="my-1">Stroke Offset</p>
+              <input
+                type="number"
+                class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                placeholder="Enter Dashoffset"
+                x-model="line.strokeDashOffset"
+              />
+            </div>
+
+            <div class="grid grid-cols-2 gap-x-[20px] text-xs">
+              <div class="text-center">
+                <p class="my-1">width</p>
+                <input
+                  type="number"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter width"
+                  x-model="line.width"
+                  min="0"
+                />
+              </div>
+              <div class="text-center">
+                <p class="my-1">height</p>
+                <input
+                  type="number"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter height"
+                  x-model="line.height"
+                  min="0"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-4 gap-x-[20px] text-xs">
+              <div class="text-center">
+                <p class="my-1">x</p>
+                <input
+                  type="number"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter x"
+                  x-model="line.x"
+                  min="0"
+                />
+              </div>
+              <div class="text-center">
+                <p class="my-1">y</p>
+                <input
+                  type="number"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter y"
+                  x-model="line.y"
+                  min="0"
+                />
+              </div>
+              <div class="text-center">
+                <p class="my-1">rx</p>
+                <input
+                  type="number"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter rx"
+                  x-model="line.rx"
+                  min="0"
+                />
+              </div>
+              <div class="text-center">
+                <p class="my-1">ry</p>
+                <input
+                  type="number"
+                  class="w-full h-[26px] px-2 outline-none border rounded-md mb-3"
+                  placeholder="Enter ry"
+                  x-model="line.ry"
+                  min="0"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Side Bar: End -->
+
+    <!-- Footer-Console: Start -->
+    <div :class="footerContainer">
+      <textarea
+        class="text-sm text-green-500 font-mono block w-full bg-[#3e3e3e] min-h-[150px]"
+        x-text="footerText"
+        readonly
+      ></textarea>
+    </div>
+    <!-- Footer-Console: End -->
+
+    <!-- Alpine Script: Start -->
+    <script>
+      const uniqueId = () => {
+        const dateString = Date.now().toString(36);
+        const randomness = Math.random().toString(36).substr(2);
+        return dateString + randomness;
+      };
+
+      document.addEventListener("alpine:init", () => {
+        document.body.classList.remove("hidden");
+        let defaultClass =
+          "overflow-auto w-[300px] border-r border-zinc-100 fixed h-dvh top-0 p-[20px] bg-white transition-all transition ease-in-out delay-150";
+        let footerDefaultClass =
+          "p-[20px] rounded-t-md fixed h-[180px] max-w-[700px] w-full mx-auto bg-[#3e3e3e] w-full left-[50%] -translate-x-1/2 transition-all transition ease-in-out delay-150";
+
+        Alpine.data("container", () => ({
+          footerContainer: `${footerDefaultClass} -bottom-[180px]`,
+          sideContainer: `${defaultClass} left-0`,
+          sideBtnClass:
+            "absolute top-[12px] -right-[48px] w-[40px] h-[40px] bg-zinc-100 " +
+            "flex justify-center items-center " +
+            "rounded-lg",
+          footerBtnClass:
+            "absolute -top-[48px] right-[8px] w-[40px] h-[40px] bg-[#3e3e3e] " +
+            "flex justify-center items-center text-white " +
+            "rounded-lg",
+          containerClass:
+            "bg-gray-50 w-full max-w-[700px] min-h-dvh mx-auto relative pt-12",
+          footerText: "",
+          width: 100,
+          height: 100,
+          open: true,
+          footerOpen: false,
+          showGrid: true,
+          gridData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+          options: {
+            fillRules: ["nonzero", "evenodd"],
+          },
+          line: {
+            id: uniqueId(),
+            x: 10,
+            y: 10,
+            width: 20,
+            height: 20,
+            rx: 0,
+            ry: 0,
+            stroke: "black",
+            strokeWidth: 2,
+            strokeOpacity: 1,
+            strokeLinecap: "butt",
+            strokeLinejoin: "miter",
+            strokeDashArray: ["0", "0", "0"],
+            strokeDashOffset: 0,
+            showSign: false,
+            fill: "#ff4444",
+            fillOpacity: 1,
+            fillRule: "nonzero",
+            makeTransition: true,
+          },
+
+          removeItem(id) {
+            this.data = this.data.filter((data) => data.id !== id);
+          },
+          toggle() {
+            this.open = !this.open;
+            this.sideContainer = `${defaultClass} ${
+              this.open ? "left-0" : "-left-[300px]"
+            }`;
+          },
+          footerToggle() {
+            this.footerOpen = !this.footerOpen;
+            this.footerContainer = `${footerDefaultClass} ${
+              this.footerOpen ? "bottom-0" : "-bottom-[180px]"
+            }`;
+          },
+          updateFooterText() {
+            const viewBox = `viewBox="0 0 100 100"`;
+            const lineText = this.data.reduce(
+              (cur, line) =>
+                `${cur}  <rect x='${line.x}' y='${line.y}' rx='${line.rx}' ry='${line.ry}' width='${line.width}' height='${line.height}' stroke='${line.stroke}' fill='${line.fill}' />\n`,
+              ``
+            );
+            this.footerText = `<svg class="svg" ${viewBox}>\n${lineText}</svg>`;
+          },
+          init() {
+            this.$watch("data", () => {
+              this.updateFooterText();
+            });
+            this.updateFooterText();
+          },
+        }));
+      });
+
+      // Polyfill
+      (function () {
+        var templates = document.querySelectorAll("svg template");
+        var el, template, attribs, attrib, count, child, content;
+        for (var i = 0; i < templates.length; i++) {
+          el = templates[i];
+          template = el.ownerDocument.createElement("template");
+          el.parentNode.insertBefore(template, el);
+          attribs = el.attributes;
+          count = attribs.length;
+          while (count-- > 0) {
+            attrib = attribs[count];
+            template.setAttribute(attrib.name, attrib.value);
+            el.removeAttribute(attrib.name);
+          }
+          el.parentNode.removeChild(el);
+          content = template.content;
+          while ((child = el.firstChild)) {
+            content.appendChild(child);
+          }
+        }
+      })();
+    </script>
+    <!-- Alpine Script: End -->
+  </body>
+</html>
