@@ -1,0 +1,14 @@
+svg.svg {
+  border: 1px solid #dfdfdf;
+  background-color: #fff;
+
+  width: 500px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+.show-grid {
+  background-size: 25px 25px;
+  background-image: linear-gradient(to right, #dfdfdf 1px, transparent 1px),
+    linear-gradient(to bottom, #dfdfdf 1px, transparent 1px);
+}
