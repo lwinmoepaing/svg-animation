@@ -42,7 +42,6 @@
               :d="`M${item.startPoint.x},${item.startPoint.y} ` + item.points.map(({x, y}) => x ? `H${x}`: `V${y}`).join` ` + `${item.connectStart ? 'Z' : ''}`"
             ></path>
           </template>
-        
         </svg>
 
         <div
@@ -212,7 +211,7 @@
     <!-- Footer-Console: Start -->
     <div :class="footerContainer">
       <textarea
-        class="text-sm text-green-500 font-mono block w-full bg-[#3e3e3e] min-h-[150px]"
+        class="text-[10px] text-green-500 font-mono block w-full bg-[#3e3e3e] min-h-[150px]"
         x-text="footerText"
         readonly
       ></textarea>
@@ -334,6 +333,10 @@
           },
           updateFooterText() {
             const viewBox = `viewBox="0 0 100 100"`;
+            const grandientContent = `     <stop offset="0%" stop-color="${this.linearGradient.start.color}" stop-opacity="${this.linearGradient.start.opacity}" />\n     <stop offset="100%" stop-color="${this.linearGradient.end.color}" stop-opacity="${this.linearGradient.end.opacity}" />`;
+            const linearContent = `   <linearGradient id="linearGradient" gradientTransform="rotate(${this.linearGradient.rotate})">\n${grandientContent}\n   </linearGradient>`;
+            const defs = `  <defs>\n${linearContent}\n  </defs>\n`;
+
             const lineText = this.data.reduce(
               (cur, line) =>
                 `${cur}  <path d='M${line.startPoint.x},${
@@ -344,10 +347,13 @@
                 }' fill='${line.fill}' />\n`,
               ``
             );
-            this.footerText = `<svg class="svg" ${viewBox}>\n${lineText}</svg>`;
+            this.footerText = `<svg class="svg" ${viewBox}>\n${defs}${lineText}</svg>`;
           },
           init() {
             this.$watch("data", () => {
+              this.updateFooterText();
+            });
+            this.$watch("linearGradient", () => {
               this.updateFooterText();
             });
             this.updateFooterText();
