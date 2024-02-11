@@ -33,6 +33,23 @@
                 :stop-opacity="linearGradient.end.opacity"
               ></stop>
             </linearGradient>
+
+            <radialGradient
+              id="radialGradient"
+              :cx="radialGradient.cx +'%'"
+              :cy="radialGradient.cy +'%'"
+            >
+              <stop
+                offset="0%"
+                :stop-color="radialGradient.start.color"
+                :stop-opacity="radialGradient.start.opacity"
+              ></stop>
+              <stop
+                offset="100%"
+                :stop-color="radialGradient.end.color"
+                :stop-opacity="radialGradient.end.opacity"
+              ></stop>
+            </radialGradient>
           </defs>
 
           <template x-for="item in data" :key="item.id">
@@ -203,6 +220,108 @@
               </div>
             </div>
           </div>
+
+          <div class="border-t mt-5 pt-5">
+            <h2 class="text-normal px-2 mb-4">Radial Gradient</h2>
+            <div class="grid grid-cols-2 gap-x-[20px] text-xs">
+              <div class="text-center">
+                <p class="mt-1">Start Color</p>
+                <div class="text-xs flex items-center justify-center mt-2">
+                  <input
+                    type="text"
+                    class="w-full h-[26px] px-2 outline-none border text-center rounded-md mb-1"
+                    placeholder="Enter Start Color"
+                    x-model="radialGradient.start.color"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <div class="text-center">
+                <p
+                  class="mt-1"
+                  x-text="'Start Opacity['+radialGradient.start.opacity+']'"
+                />
+
+                <div class="text-xs flex items-center justify-center mt-2">
+                  <input
+                    type="range"
+                    class="w-full h-[26px] outline-none border text-center rounded-md mb-1"
+                    placeholder="Enter Color Opacity"
+                    x-model="radialGradient.start.opacity"
+                    min="0"
+                    step="0.1"
+                    max="1"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-x-[20px] text-xs">
+              <div class="text-center">
+                <p class="mt-1">End Color</p>
+                <div class="text-xs flex items-center justify-center mt-2">
+                  <input
+                    type="text"
+                    class="w-full h-[26px] px-2 outline-none border text-center rounded-md mb-1"
+                    placeholder="Enter End Color"
+                    x-model="radialGradient.end.color"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <div class="text-center">
+                <p
+                  class="mt-1"
+                  x-text="'End Opacity['+radialGradient.end.opacity+']'"
+                />
+
+                <div class="text-xs flex items-center justify-center mt-2">
+                  <input
+                    type="range"
+                    class="w-full h-[26px] outline-none border text-center rounded-md mb-1"
+                    placeholder="Enter Color Opacity"
+                    x-model="radialGradient.end.opacity"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-x-[20px] text-xs">
+              <div class="">
+                <p class="mt-1" x-text="'cx ['+radialGradient.cx+'%]'" />
+
+                <div class="text-xs flex items-center justify-center">
+                  <input
+                    type="range"
+                    class="w-full h-[26px] outline-none border text-center rounded-md mb-1"
+                    placeholder="Enter Color Opacity"
+                    x-model="radialGradient.cx"
+                    min="0"
+                    max="100"
+                    step="1"
+                  />
+                </div>
+              </div>
+              <div class="">
+                <p class="mt-1" x-text="'cy ['+radialGradient.cy+'%]'" />
+
+                <div class="text-xs flex items-center justify-center">
+                  <input
+                    type="range"
+                    class="w-full h-[26px] outline-none border text-center rounded-md mb-1"
+                    placeholder="Enter Color Opacity"
+                    x-model="radialGradient.cy"
+                    min="0"
+                    max="100"
+                    step="1"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -285,6 +404,18 @@
               opacity: 0.8,
             },
           },
+          radialGradient: {
+            cx: 50,
+            cy: 50,
+            start: {
+              color: "#fbc7d4",
+              opacity: 1,
+            },
+            end: {
+              color: "#9796f0",
+              opacity: 1,
+            },
+          },
           data: [
             {
               id: uniqueId(),
@@ -297,9 +428,9 @@
             {
               id: uniqueId(),
               stroke: "#dfdfdf",
-              fill: "#ff4444",
+              fill: "url('#radialGradient')",
               startPoint: { x: 60, y: 50 },
-              points: [{ x: 80 }, { y: 70 }, { x: 60 }],
+              points: [{ x: 90 }, { y: 80 }, { x: 60 }],
               connectStart: true,
             },
           ],
@@ -335,7 +466,10 @@
             const viewBox = `viewBox="0 0 100 100"`;
             const grandientContent = `     <stop offset="0%" stop-color="${this.linearGradient.start.color}" stop-opacity="${this.linearGradient.start.opacity}" />\n     <stop offset="100%" stop-color="${this.linearGradient.end.color}" stop-opacity="${this.linearGradient.end.opacity}" />`;
             const linearContent = `   <linearGradient id="linearGradient" gradientTransform="rotate(${this.linearGradient.rotate})">\n${grandientContent}\n   </linearGradient>`;
-            const defs = `  <defs>\n${linearContent}\n  </defs>\n`;
+
+            const radialGradient = `     <stop offset="0%" stop-color="${this.radialGradient.start.color}" stop-opacity="${this.radialGradient.start.opacity}" />\n     <stop offset="100%" stop-color="${this.radialGradient.end.color}" stop-opacity="${this.radialGradient.end.opacity}" />`;
+            const radialContent = `   <radialGradient id="radialGradient" cx="${this.radialGradient.cx}%" cy="${this.radialGradient.cy}%" >\n${radialGradient}\n   </linearGradient>`;
+            const defs = `  <defs>\n${linearContent}\n${radialContent}\n  </defs>\n`;
 
             const lineText = this.data.reduce(
               (cur, line) =>
@@ -354,6 +488,9 @@
               this.updateFooterText();
             });
             this.$watch("linearGradient", () => {
+              this.updateFooterText();
+            });
+            this.$watch("radialGradient", () => {
               this.updateFooterText();
             });
             this.updateFooterText();
